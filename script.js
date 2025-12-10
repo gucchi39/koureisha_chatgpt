@@ -90,13 +90,41 @@ document.addEventListener('DOMContentLoaded', () => {
     if ('speechSynthesis' in window) {
         // 音声リストの読み込みを待つ
         speechSynthesis.onvoiceschanged = () => {
-            console.log('音声リスト読み込み完了');
+            addLog('音声リスト読み込み完了', 'success');
         };
     }
+    
+    // デバッグログの表示切替
+    const toggleDebugBtn = document.getElementById('toggle-debug');
+    const logContent = document.getElementById('log-content');
+    const debugLog = document.getElementById('debug-log');
+    
+    debugLog.style.display = 'block';
+    
+    toggleDebugBtn.addEventListener('click', () => {
+        logContent.classList.toggle('show');
+        toggleDebugBtn.textContent = logContent.classList.contains('show') ? 'ログを隠す' : 'ログを表示';
+    });
+    
+    addLog('ページ読み込み完了');
     
     // 入力欄にフォーカス
     userInput.focus();
 });
+
+// ログを表示する関数
+function addLog(message, type = 'info') {
+    const logContent = document.getElementById('log-content');
+    const entry = document.createElement('div');
+    entry.className = `log-entry ${type}`;
+    const timestamp = new Date().toLocaleTimeString('ja-JP');
+    entry.textContent = `[${timestamp}] ${message}`;
+    logContent.appendChild(entry);
+    logContent.scrollTop = logContent.scrollHeight;
+    
+    // 元のconsole.logも呼ぶ
+    console.log(message);
+}
 
 // メッセージを送信
 async function sendMessage() {
@@ -337,9 +365,11 @@ function stopListening() {
 // テキストを音声で読み上げ
 function speakText(text) {
     if (!('speechSynthesis' in window)) {
-        console.log('音声合成に対応していません');
+        addLog('❌ 音声合成に対応していません', 'error');
         return;
     }
+    
+    addLog('🔊 音声読み上げ開始準備');
     
     // 現在の音声を停止
     synth.cancel();
@@ -350,7 +380,7 @@ function speakText(text) {
         const cleanText = text.replace(/[。！？]/g, '。');
         const sentences = cleanText.split(/[\n。]/).filter(s => s.trim());
         
-        console.log('読み上げ開始:', sentences);
+        addLog('読み上げテキスト: ' + sentences.join('、'));
         
         // Safari/iOS対策: 音声リストを取得
         let voices = synth.getVoices();
@@ -358,10 +388,10 @@ function speakText(text) {
         // 音声リストが空の場合は再取得を試みる
         if (voices.length === 0) {
             voices = synth.getVoices();
-            console.log('音声リストを再取得しました');
+            addLog('音声リストを再取得しました');
         }
         
-        console.log('利用可能な音声:', voices.map(v => v.name + ' (' + v.lang + ')'));
+        addLog(`利用可能な音声数: ${voices.length}`);
         
         // 日本語の音声を選択
         let selectedVoice = null;
@@ -376,7 +406,9 @@ function speakText(text) {
                 v.name.includes('Otoya') ||
                 v.name.includes('Google')
             ) || japaneseVoices[0];
-            console.log('選択された音声:', selectedVoice.name);
+            addLog('選択された音声: ' + selectedVoice.name);
+        } else {
+            addLog('❌ 日本語音声が見つかりません', 'error');
         }
         
         // すべての文を一つのutteranceにまとめる（Safari対策）
@@ -392,20 +424,20 @@ function speakText(text) {
         }
         
         utterance.onstart = () => {
-            console.log('✅ 音声読み上げ開始');
+            addLog('✅ 音声読み上げ開始', 'success');
         };
         
         utterance.onend = () => {
-            console.log('✅ 音声読み上げ終了');
+            addLog('✅ 音声読み上げ終了', 'success');
         };
         
         utterance.onerror = (event) => {
-            console.error('❌ 音声合成エラー:', event.error);
+            addLog('❌ 音声合成エラー: ' + event.error, 'error');
         };
         
         // Safari/iOS対策: すぐに読み上げを開始
         synth.speak(utterance);
-        console.log('speak()を呼び出しました');
+        addLog('speak()を呼び出しました');
     }, 100);
 }
 
