@@ -342,45 +342,71 @@ function speakText(text) {
     }
     
     // 現在の音声を停止
-    if (synth.speaking) {
-        synth.cancel();
-    }
+    synth.cancel();
     
-    // 改行とピリオドで分割
-    const cleanText = text.replace(/[。！？]/g, '。');
-    const sentences = cleanText.split(/[\n。]/).filter(s => s.trim());
-    
-    let delay = 0;
-    sentences.forEach((sentence, index) => {
-        setTimeout(() => {
-            const utterance = new SpeechSynthesisUtterance(sentence.trim());
-            utterance.lang = 'ja-JP';
-            utterance.rate = 0.85; // ゆっくり話す
-            utterance.pitch = 1.2; // 少し高めの声
-            utterance.volume = 1.0;
-            
-            // 日本語の音声を選択
-            const voices = synth.getVoices();
-            const japaneseVoices = voices.filter(voice => voice.lang.startsWith('ja'));
-            if (japaneseVoices.length > 0) {
-                // 女性の声を優先的に選択
-                const femaleVoice = japaneseVoices.find(v => v.name.includes('Female') || v.name.includes('female'));
-                utterance.voice = femaleVoice || japaneseVoices[0];
-            }
-            
-            utterance.onstart = () => {
-                console.log('読み上げ開始:', sentence);
-            };
-            
-            utterance.onerror = (event) => {
-                console.error('音声合成エラー:', event);
-            };
-            
-            synth.speak(utterance);
-        }, delay);
+    // Safari/iOS対策: 少し待ってから実行
+    setTimeout(() => {
+        // 改行とピリオドで分割
+        const cleanText = text.replace(/[。！？]/g, '。');
+        const sentences = cleanText.split(/[\n。]/).filter(s => s.trim());
         
-        delay += sentence.length * 100 + 500; // 文の長さに応じて待機時間を調整
-    });
+        console.log('読み上げ開始:', sentences);
+        
+        // Safari/iOS対策: 音声リストを取得
+        let voices = synth.getVoices();
+        
+        // 音声リストが空の場合は再取得を試みる
+        if (voices.length === 0) {
+            voices = synth.getVoices();
+            console.log('音声リストを再取得しました');
+        }
+        
+        console.log('利用可能な音声:', voices.map(v => v.name + ' (' + v.lang + ')'));
+        
+        // 日本語の音声を選択
+        let selectedVoice = null;
+        const japaneseVoices = voices.filter(voice => 
+            voice.lang === 'ja-JP' || voice.lang === 'ja_JP' || voice.lang.startsWith('ja')
+        );
+        
+        if (japaneseVoices.length > 0) {
+            // Kyoko (iOS/macOS), Google 日本語などを優先
+            selectedVoice = japaneseVoices.find(v => 
+                v.name.includes('Kyoko') || 
+                v.name.includes('Otoya') ||
+                v.name.includes('Google')
+            ) || japaneseVoices[0];
+            console.log('選択された音声:', selectedVoice.name);
+        }
+        
+        // すべての文を一つのutteranceにまとめる（Safari対策）
+        const fullText = sentences.join('。');
+        const utterance = new SpeechSynthesisUtterance(fullText);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 0.9; // ゆっくり話す
+        utterance.pitch = 1.1; // 少し高めの声
+        utterance.volume = 1.0;
+        
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+        }
+        
+        utterance.onstart = () => {
+            console.log('✅ 音声読み上げ開始');
+        };
+        
+        utterance.onend = () => {
+            console.log('✅ 音声読み上げ終了');
+        };
+        
+        utterance.onerror = (event) => {
+            console.error('❌ 音声合成エラー:', event.error);
+        };
+        
+        // Safari/iOS対策: すぐに読み上げを開始
+        synth.speak(utterance);
+        console.log('speak()を呼び出しました');
+    }, 100);
 }
 
 // テキストエリアの自動リサイズ
