@@ -54,14 +54,26 @@ const POPO_CHARACTER = {
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
+const voiceButton = document.getElementById('voice-button');
 
 // 会話履歴
 let conversationHistory = [];
+
+// 音声認識の設定
+let recognition = null;
+let isListening = false;
+
+// 音声合成の設定
+let synth = window.speechSynthesis;
+let currentUtterance = null;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
     // 送信ボタンのイベントリスナー
     sendButton.addEventListener('click', sendMessage);
+    
+    // 音声ボタンのイベントリスナー
+    voiceButton.addEventListener('click', toggleVoiceRecognition);
     
     // Enterキーで送信(Shift+Enterで改行)
     userInput.addEventListener('keydown', (e) => {
@@ -70,6 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
             sendMessage();
         }
     });
+    
+    // 音声認識の初期化
+    initSpeechRecognition();
     
     // 入力欄にフォーカス
     userInput.focus();
@@ -95,12 +110,15 @@ async function sendMessage() {
     // タイピングインジケーターを表示
     showTypingIndicator();
     
-    // ポポの応答を生成
+    // ヌクモの応答を生成
     setTimeout(async () => {
         const response = await generatePopoResponse(message);
         hideTypingIndicator();
         addMessage(response, 'popo');
         conversationHistory.push({ role: 'assistant', content: response });
+        
+        // 音声で応答
+        speakText(response);
         
         // 送信ボタンを有効化
         sendButton.disabled = false;
@@ -171,7 +189,7 @@ async function generatePopoResponse(userMessage) {
     }
     
     if (lowerMessage.includes('こんにちは')) {
-        return `こんにちは！\nお話ししてくださって、ありがとうございます。\nヌクモ、とってもうれしいですよ。えへへ。`;
+        return `こんにちは。\nお話ししてくださって、ありがとうございます。\nヌクモ、とってもうれしいですよ。えへへ。`;
     }
     
     if (lowerMessage.includes('こんばんは')) {
@@ -249,6 +267,94 @@ function generateGenericResponse(userMessage) {
 // 配列からランダムに要素を取得
 function getRandomItem(array) {
     return array[Math.floor(Math.random() * array.length)];
+}
+
+// 音声認識の初期化
+function initSpeechRecognition() {
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        recognition = new SpeechRecognition();
+        recognition.lang = 'ja-JP';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        
+        recognition.onstart = () => {
+            isListening = true;
+            voiceButton.classList.add('listening');
+            voiceButton.textContent = '🔴';
+        };
+        
+        recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            userInput.value = transcript;
+            sendMessage();
+        };
+        
+        recognition.onerror = (event) => {
+            console.error('音声認識エラー:', event.error);
+            stopListening();
+        };
+        
+        recognition.onend = () => {
+            stopListening();
+        };
+    } else {
+        voiceButton.style.display = 'none';
+        console.log('このブラウザは音声認識に対応していません');
+    }
+}
+
+// 音声認識の切り替え
+function toggleVoiceRecognition() {
+    if (!recognition) return;
+    
+    if (isListening) {
+        recognition.stop();
+    } else {
+        // 現在の音声出力を停止
+        if (synth.speaking) {
+            synth.cancel();
+        }
+        recognition.start();
+    }
+}
+
+// 音声認識の停止
+function stopListening() {
+    isListening = false;
+    voiceButton.classList.remove('listening');
+    voiceButton.textContent = '🎤';
+}
+
+// テキストを音声で読み上げ
+function speakText(text) {
+    // 現在の音声を停止
+    if (synth.speaking) {
+        synth.cancel();
+    }
+    
+    // 改行とピリオドで分割して読み上げ
+    const sentences = text.split(/[\n。！？]/).filter(s => s.trim());
+    
+    sentences.forEach((sentence, index) => {
+        const utterance = new SpeechSynthesisUtterance(sentence);
+        utterance.lang = 'ja-JP';
+        utterance.rate = 0.9; // ゆっくり話す
+        utterance.pitch = 1.1; // 少し高めの声
+        utterance.volume = 1.0;
+        
+        // 日本語の音声を選択
+        const voices = synth.getVoices();
+        const japaneseVoice = voices.find(voice => voice.lang === 'ja-JP');
+        if (japaneseVoice) {
+            utterance.voice = japaneseVoice;
+        }
+        
+        // 少し間を空けて次の文を読む
+        setTimeout(() => {
+            synth.speak(utterance);
+        }, index * 100);
+    });
 }
 
 // テキストエリアの自動リサイズ

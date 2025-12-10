@@ -181,6 +181,41 @@ main {
     box-shadow: 0 0 10px rgba(255, 153, 51, 0.3);
 }
 
+.voice-button {
+    padding: 20px 25px;
+    font-size: 32px;
+    background: linear-gradient(135deg, #90ee90 0%, #66cc66 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.voice-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 204, 102, 0.4);
+}
+
+.voice-button:active {
+    transform: translateY(0);
+}
+
+.voice-button.listening {
+    background: linear-gradient(135deg, #ff6b6b 0%, #ee5555 100%);
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.7;
+    }
+}
+
 .send-button {
     padding: 20px 40px;
     font-size: 24px;
