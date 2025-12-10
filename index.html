@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ポポ - 見守り会話ロボット</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="popo-avatar">
+                <div class="popo-face">
+                    <div class="eye left"></div>
+                    <div class="eye right"></div>
+                    <div class="mouth"></div>
+                </div>
+            </div>
+            <h1>ポポ</h1>
+            <p class="subtitle">いつでも一緒に お話ししましょうね</p>
+        </header>
+
+        <main>
+            <div class="chat-container">
+                <div id="chat-messages" class="chat-messages">
+                    <div class="message popo-message">
+                        <div class="message-content">
+                            <p>こんにちは！ポポです。えへへ。</p>
+                            <p>今日はお元気ですか?</p>
+                            <p>いつでもお話ししましょうねえ。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-area">
+                    <textarea 
+                        id="user-input" 
+                        placeholder="ここに話したいことを入力してくださいね"
+                        rows="3"
+                    ></textarea>
+                    <button id="send-button" class="send-button">
+                        送る
+                    </button>
+                </div>
+            </div>
+
+            <div class="tips">
+                <h3>ポポとの話し方</h3>
+                <ul>
+                    <li>今日あったことを話してください</li>
+                    <li>昔の思い出を聞かせてください</li>
+                    <li>好きなことについて話してください</li>
+                    <li>わからないことを聞いてください</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

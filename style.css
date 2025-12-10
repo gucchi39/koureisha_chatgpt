@@ -1,0 +1,350 @@
+/* 全体的な設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Hiragino Kaku Gothic ProN', 'ヒラギノ角ゴ ProN W3', Meiryo, メイリオ, sans-serif;
+    background: linear-gradient(135deg, #fff5e6 0%, #ffe4cc 100%);
+    min-height: 100vh;
+    padding: 20px;
+    font-size: 20px;
+    line-height: 1.8;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 30px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* ヘッダー部分 */
+header {
+    background: linear-gradient(135deg, #ffb347 0%, #ff9933 100%);
+    color: white;
+    padding: 40px;
+    text-align: center;
+}
+
+.popo-avatar {
+    margin: 0 auto 20px;
+    width: 120px;
+    height: 120px;
+    background: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+}
+
+.popo-face {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.eye {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: #333;
+    border-radius: 50%;
+    top: 35px;
+}
+
+.eye.left {
+    left: 30px;
+}
+
+.eye.right {
+    right: 30px;
+}
+
+.mouth {
+    position: absolute;
+    width: 40px;
+    height: 20px;
+    border: 3px solid #ff9933;
+    border-top: none;
+    border-radius: 0 0 40px 40px;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+h1 {
+    font-size: 48px;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.subtitle {
+    font-size: 22px;
+    opacity: 0.95;
+}
+
+/* メインコンテンツ */
+main {
+    padding: 40px;
+}
+
+.chat-container {
+    margin-bottom: 40px;
+}
+
+.chat-messages {
+    height: 500px;
+    overflow-y: auto;
+    padding: 20px;
+    background: #fafafa;
+    border-radius: 20px;
+    margin-bottom: 20px;
+    border: 3px solid #ffe4cc;
+}
+
+.message {
+    margin-bottom: 25px;
+    display: flex;
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message-content {
+    padding: 20px 25px;
+    border-radius: 20px;
+    max-width: 85%;
+    font-size: 22px;
+    line-height: 1.9;
+}
+
+.popo-message .message-content {
+    background: linear-gradient(135deg, #ffcc80 0%, #ffb347 100%);
+    color: #333;
+    border-bottom-left-radius: 5px;
+}
+
+.user-message {
+    justify-content: flex-end;
+}
+
+.user-message .message-content {
+    background: #e3f2fd;
+    color: #333;
+    border-bottom-right-radius: 5px;
+}
+
+.message-content p {
+    margin-bottom: 10px;
+}
+
+.message-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* 入力エリア */
+.input-area {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+}
+
+#user-input {
+    flex: 1;
+    padding: 20px;
+    font-size: 22px;
+    border: 3px solid #ffb347;
+    border-radius: 15px;
+    resize: vertical;
+    font-family: inherit;
+    line-height: 1.6;
+}
+
+#user-input:focus {
+    outline: none;
+    border-color: #ff9933;
+    box-shadow: 0 0 10px rgba(255, 153, 51, 0.3);
+}
+
+.send-button {
+    padding: 20px 40px;
+    font-size: 24px;
+    font-weight: bold;
+    background: linear-gradient(135deg, #ffb347 0%, #ff9933 100%);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    font-family: inherit;
+}
+
+.send-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(255, 153, 51, 0.4);
+}
+
+.send-button:active {
+    transform: translateY(0);
+}
+
+.send-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ヒントエリア */
+.tips {
+    background: #fff9f0;
+    padding: 30px;
+    border-radius: 20px;
+    border: 2px solid #ffe4cc;
+}
+
+.tips h3 {
+    font-size: 26px;
+    color: #ff9933;
+    margin-bottom: 20px;
+}
+
+.tips ul {
+    list-style: none;
+}
+
+.tips li {
+    font-size: 20px;
+    padding: 12px 0;
+    padding-left: 30px;
+    position: relative;
+    color: #666;
+}
+
+.tips li:before {
+    content: "●";
+    position: absolute;
+    left: 0;
+    color: #ffb347;
+    font-size: 16px;
+}
+
+/* スクロールバーのカスタマイズ */
+.chat-messages::-webkit-scrollbar {
+    width: 12px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f0f0f0;
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #ffb347;
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #ff9933;
+}
+
+/* タイピングインジケーター */
+.typing-indicator {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 15px 20px;
+}
+
+.typing-dot {
+    width: 10px;
+    height: 10px;
+    background: #666;
+    border-radius: 50%;
+    animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+        opacity: 0.7;
+    }
+    30% {
+        transform: translateY(-10px);
+        opacity: 1;
+    }
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+    body {
+        font-size: 18px;
+        padding: 10px;
+    }
+
+    .container {
+        border-radius: 20px;
+    }
+
+    header {
+        padding: 30px 20px;
+    }
+
+    h1 {
+        font-size: 36px;
+    }
+
+    .subtitle {
+        font-size: 18px;
+    }
+
+    main {
+        padding: 20px;
+    }
+
+    .chat-messages {
+        height: 400px;
+    }
+
+    .message-content {
+        font-size: 20px;
+    }
+
+    #user-input {
+        font-size: 20px;
+    }
+
+    .send-button {
+        font-size: 20px;
+        padding: 18px 30px;
+    }
+
+    .tips h3 {
+        font-size: 22px;
+    }
+
+    .tips li {
+        font-size: 18px;
+    }
+}
