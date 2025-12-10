@@ -86,6 +86,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // 音声認識の初期化
     initSpeechRecognition();
     
+    // 音声合成の初期化（音声リストを読み込む）
+    if ('speechSynthesis' in window) {
+        // 音声リストの読み込みを待つ
+        speechSynthesis.onvoiceschanged = () => {
+            console.log('音声リスト読み込み完了');
+        };
+    }
+    
     // 入力欄にフォーカス
     userInput.focus();
 });
@@ -287,7 +295,7 @@ function initSpeechRecognition() {
         recognition.onresult = (event) => {
             const transcript = event.results[0][0].transcript;
             userInput.value = transcript;
-            sendMessage();
+            userInput.focus();
         };
         
         recognition.onerror = (event) => {
@@ -328,32 +336,50 @@ function stopListening() {
 
 // テキストを音声で読み上げ
 function speakText(text) {
+    if (!('speechSynthesis' in window)) {
+        console.log('音声合成に対応していません');
+        return;
+    }
+    
     // 現在の音声を停止
     if (synth.speaking) {
         synth.cancel();
     }
     
-    // 改行とピリオドで分割して読み上げ
-    const sentences = text.split(/[\n。！？]/).filter(s => s.trim());
+    // 改行とピリオドで分割
+    const cleanText = text.replace(/[。！？]/g, '。');
+    const sentences = cleanText.split(/[\n。]/).filter(s => s.trim());
     
+    let delay = 0;
     sentences.forEach((sentence, index) => {
-        const utterance = new SpeechSynthesisUtterance(sentence);
-        utterance.lang = 'ja-JP';
-        utterance.rate = 0.9; // ゆっくり話す
-        utterance.pitch = 1.1; // 少し高めの声
-        utterance.volume = 1.0;
-        
-        // 日本語の音声を選択
-        const voices = synth.getVoices();
-        const japaneseVoice = voices.find(voice => voice.lang === 'ja-JP');
-        if (japaneseVoice) {
-            utterance.voice = japaneseVoice;
-        }
-        
-        // 少し間を空けて次の文を読む
         setTimeout(() => {
+            const utterance = new SpeechSynthesisUtterance(sentence.trim());
+            utterance.lang = 'ja-JP';
+            utterance.rate = 0.85; // ゆっくり話す
+            utterance.pitch = 1.2; // 少し高めの声
+            utterance.volume = 1.0;
+            
+            // 日本語の音声を選択
+            const voices = synth.getVoices();
+            const japaneseVoices = voices.filter(voice => voice.lang.startsWith('ja'));
+            if (japaneseVoices.length > 0) {
+                // 女性の声を優先的に選択
+                const femaleVoice = japaneseVoices.find(v => v.name.includes('Female') || v.name.includes('female'));
+                utterance.voice = femaleVoice || japaneseVoices[0];
+            }
+            
+            utterance.onstart = () => {
+                console.log('読み上げ開始:', sentence);
+            };
+            
+            utterance.onerror = (event) => {
+                console.error('音声合成エラー:', event);
+            };
+            
             synth.speak(utterance);
-        }, index * 100);
+        }, delay);
+        
+        delay += sentence.length * 100 + 500; // 文の長さに応じて待機時間を調整
     });
 }
 
