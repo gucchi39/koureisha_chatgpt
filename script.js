@@ -54,7 +54,8 @@ const POPO_CHARACTER = {
 const chatMessages = document.getElementById('chat-messages');
 const userInput = document.getElementById('user-input');
 const sendButton = document.getElementById('send-button');
-const voiceButton = document.getElementById('voice-button');
+const voiceInputButton = document.getElementById('voice-input-button');
+const voiceOutputButton = document.getElementById('voice-output-button');
 
 // 会話履歴
 let conversationHistory = [];
@@ -66,14 +67,18 @@ let isListening = false;
 // 音声合成の設定
 let synth = window.speechSynthesis;
 let currentUtterance = null;
+let isVoiceOutputEnabled = false;
 
 // 初期化
 document.addEventListener('DOMContentLoaded', () => {
     // 送信ボタンのイベントリスナー
     sendButton.addEventListener('click', sendMessage);
     
-    // 音声ボタンのイベントリスナー
-    voiceButton.addEventListener('click', toggleVoiceRecognition);
+    // 音声入力ボタンのイベントリスナー
+    voiceInputButton.addEventListener('click', toggleVoiceRecognition);
+    
+    // 音声出力ボタンのイベントリスナー
+    voiceOutputButton.addEventListener('click', toggleVoiceOutput);
     
     // Enterキーで送信(Shift+Enterで改行)
     userInput.addEventListener('keydown', (e) => {
@@ -153,8 +158,10 @@ async function sendMessage() {
         addMessage(response, 'popo');
         conversationHistory.push({ role: 'assistant', content: response });
         
-        // 音声で応答
-        speakText(response);
+        // 音声出力が有効な場合のみ応答
+        if (isVoiceOutputEnabled) {
+            speakText(response);
+        }
         
         // 送信ボタンを有効化
         sendButton.disabled = false;
@@ -316,8 +323,8 @@ function initSpeechRecognition() {
         
         recognition.onstart = () => {
             isListening = true;
-            voiceButton.classList.add('listening');
-            voiceButton.textContent = '🔴';
+            voiceInputButton.classList.add('listening');
+            voiceInputButton.textContent = '🔴';
         };
         
         recognition.onresult = (event) => {
@@ -335,8 +342,8 @@ function initSpeechRecognition() {
             stopListening();
         };
     } else {
-        voiceButton.style.display = 'none';
-        console.log('このブラウザは音声認識に対応していません');
+        voiceInputButton.style.display = 'none';
+        addLog('このブラウザは音声認識に対応していません');
     }
 }
 
@@ -358,8 +365,28 @@ function toggleVoiceRecognition() {
 // 音声認識の停止
 function stopListening() {
     isListening = false;
-    voiceButton.classList.remove('listening');
-    voiceButton.textContent = '🎤';
+    voiceInputButton.classList.remove('listening');
+    voiceInputButton.textContent = '🎤';
+}
+
+// 音声出力の切り替え
+function toggleVoiceOutput() {
+    isVoiceOutputEnabled = !isVoiceOutputEnabled;
+    
+    if (isVoiceOutputEnabled) {
+        voiceOutputButton.classList.add('active');
+        voiceOutputButton.textContent = '🔊';
+        addLog('✅ 音声出力: ON', 'success');
+        
+        // iOS対策: 最初に無音を再生して音声合成を有効化
+        const utterance = new SpeechSynthesisUtterance(' ');
+        synth.speak(utterance);
+    } else {
+        voiceOutputButton.classList.remove('active');
+        voiceOutputButton.textContent = '🔇';
+        synth.cancel();
+        addLog('音声出力: OFF');
+    }
 }
 
 // テキストを音声で読み上げ
