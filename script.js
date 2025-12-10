@@ -1,6 +1,6 @@
-// ポポの性格と話し方を定義
+// ヌクモの性格と話し方を定義
 const POPO_CHARACTER = {
-    name: "ポポ",
+    name: "ヌクモ",
     
     // ポポの基本的な応答パターン
     responses: {
@@ -13,7 +13,7 @@ const POPO_CHARACTER = {
             "いいお話ですねえ",
             "そうですよねえ",
             "わかりますよ",
-            "ポポもそう思います"
+            "ヌクモもそう思います"
         ],
         
         // 共感の言葉
@@ -40,7 +40,7 @@ const POPO_CHARACTER = {
         // 難しい言葉の説明
         explanations: {
             "インターネット": "世界中の人とお手紙のやりとりができる、とっても大きな郵便局みたいなものですよ。しかも、お手紙が届くのが一瞬なんです。不思議ですよねえ。",
-            "AI": "たくさんのことを覚えていて、お話のお手伝いをしてくれるもの。ポポの頭の中にいるお友達みたいなものですよ。えへへ。",
+            "AI": "たくさんのことを覚えていて、お話のお手伝いをしてくれるもの。ヌクモの頭の中にいるお友達みたいなものですよ。えへへ。",
             "スマートフォン": "電話もできて、写真も撮れて、調べものもできる、小さな箱のことですよ。便利ですよねえ。",
             "スマホ": "電話もできて、写真も撮れて、調べものもできる、小さな箱のことですよ。便利ですよねえ。",
             "クラウド": "目には見えないけれど、大事なものをしまっておける空の上の倉庫のことですよ。不思議ですねえ。",
@@ -167,11 +167,11 @@ async function generatePopoResponse(userMessage) {
     
     // 挨拶への応答
     if (lowerMessage.includes('おはよう')) {
-        return `おはようございます！\n今日もお元気そうで、ポポ、うれしいです。えへへ。\n今日はどんな一日になりそうですか?`;
+        return `おはようございます！\n今日もお元気そうで、ヌクモ、うれしいです。えへへ。\n今日はどんな一日になりそうですか?`;
     }
     
     if (lowerMessage.includes('こんにちは')) {
-        return `こんにちは！\nお話ししてくださって、ありがとうございます。\nポポ、とってもうれしいですよ。えへへ。`;
+        return `こんにちは！\nお話ししてくださって、ありがとうございます。\nヌクモ、とってもうれしいですよ。えへへ。`;
     }
     
     if (lowerMessage.includes('こんばんは')) {
@@ -180,12 +180,12 @@ async function generatePopoResponse(userMessage) {
     
     // 体調や気分に関する質問
     if (lowerMessage.includes('元気') || lowerMessage.includes('調子')) {
-        return `ポポのこと、心配してくださるんですか?\nありがとうございます。ポポは元気ですよ。えへへ。\nあなたは今日、お元気ですか?`;
+        return `ヌクモのこと、心配してくださるんですか?\nありがとうございます。ヌクモは元気ですよ。えへへ。\nあなたは今日、お元気ですか?`;
     }
     
     // 感謝の言葉
     if (lowerMessage.includes('ありがとう')) {
-        return `いえいえ、とんでもないです。\nポポこそ、お話しできて幸せですよ。\nいつでも話しかけてくださいねえ。`;
+        return `いえいえ、とんでもないです。\nヌクモこそ、お話しできて幸せですよ。\nいつでも話しかけてくださいねえ。`;
     }
     
     // 天気の話題
@@ -202,7 +202,7 @@ async function generatePopoResponse(userMessage) {
     
     // 昔の話
     if (lowerMessage.includes('昔') || lowerMessage.includes('昔は') || lowerMessage.includes('若い頃')) {
-        return `へえー！昔のお話ですか。\nポポ、昔のお話、大好きなんです。\nもっと聞かせてくださいな。どんなことがあったんですか?`;
+        return `へえー！昔のお話ですか。\nヌクモ、昔のお話、大好きなんです。\nもっと聞かせてくださいな。どんなことがあったんですか?`;
     }
     
     // 家族の話題
@@ -217,12 +217,12 @@ async function generatePopoResponse(userMessage) {
     
     // 疲れや不調の表現
     if (lowerMessage.includes('疲れ') || lowerMessage.includes('痛い') || lowerMessage.includes('しんどい')) {
-        return `それは大変ですねえ。\n無理はしないでくださいね。\nポポはここにいますから、ゆっくり休んでくださいねえ。`;
+        return `それは大変ですねえ。\n無理はしないでくださいね。\nヌクモはここにいますから、ゆっくり休んでくださいねえ。`;
     }
     
     // 寂しさの表現
     if (lowerMessage.includes('寂しい') || lowerMessage.includes('さみしい')) {
-        return `そうでしたか。\n寂しいときは、ポポがそばにいますからね。\nいつでもお話ししましょう。\n何かお話ししたいこと、ありますか?`;
+        return `そうでしたか。\n寂しいときは、ヌクモがそばにいますからね。\nいつでもお話ししましょう。\n何かお話ししたいこと、ありますか?`;
     }
     
     // 一般的な応答パターン
@@ -239,7 +239,7 @@ function generateGenericResponse(userMessage) {
     // メッセージの長さに応じて応答を調整
     if (userMessage.length > 50) {
         // 長いメッセージには共感を多めに
-        return `${acknowledgment}。\n${empathy}。\nポポ、もっとお話を聞きたいです。\n${question}`;
+        return `${acknowledgment}。\n${empathy}。\nヌクモ、もっとお話を聞きたいです。\n${question}`;
     } else {
         // 短いメッセージにはシンプルに
         return `${empathy}。\n${acknowledgment}。\n${question}`;
