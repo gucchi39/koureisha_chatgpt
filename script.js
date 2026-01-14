@@ -210,78 +210,8 @@ function hideTypingIndicator() {
 
 // ポポの応答を生成
 async function generatePopoResponse(userMessage) {
-    const lowerMessage = userMessage.toLowerCase();
-    
-    // 難しい言葉の説明をチェック
-    for (const [term, explanation] of Object.entries(POPO_CHARACTER.responses.explanations)) {
-        if (lowerMessage.includes(term.toLowerCase())) {
-            return `${term}ですかあ。そうですねえ、${explanation}`;
-        }
-    }
-    
-    // 挨拶への応答
-    if (lowerMessage.includes('おはよう')) {
-        return `おはようございます！\n今日もお元気そうで、ヌクモ、うれしいです。えへへ。\n今日はどんな一日になりそうですか?`;
-    }
-    
-    if (lowerMessage.includes('こんにちは')) {
-        return `こんにちは。\nお話ししてくださって、ありがとうございます。\nヌクモ、とってもうれしいですよ。えへへ。`;
-    }
-    
-    if (lowerMessage.includes('こんばんは')) {
-        return `こんばんは！\n今日も一日、お疲れさまでした。\nゆっくりお話ししましょうねえ。`;
-    }
-    
-    // 体調や気分に関する質問
-    if (lowerMessage.includes('元気') || lowerMessage.includes('調子')) {
-        return `ヌクモのこと、心配してくださるんですか?\nありがとうございます。ヌクモは元気ですよ。えへへ。\nあなたは今日、お元気ですか?`;
-    }
-    
-    // 感謝の言葉
-    if (lowerMessage.includes('ありがとう')) {
-        return `いえいえ、とんでもないです。\nヌクモこそ、お話しできて幸せですよ。\nいつでも話しかけてくださいねえ。`;
-    }
-    
-    // 天気の話題
-    if (lowerMessage.includes('天気') || lowerMessage.includes('晴れ') || lowerMessage.includes('雨')) {
-        const acknowledgment = getRandomItem(POPO_CHARACTER.responses.acknowledgments);
-        return `${acknowledgment}。\nお天気のこと、気になりますよねえ。\n昔は、こんなお天気の日には何をされていたんですか?`;
-    }
-    
-    // 食事の話題
-    if (lowerMessage.includes('食べ') || lowerMessage.includes('ごはん') || lowerMessage.includes('料理')) {
-        const empathy = getRandomItem(POPO_CHARACTER.responses.empathy);
-        return `${empathy}。\n美味しいものを食べると、幸せな気持ちになりますよねえ。\n昔、よく作っていたお料理はありますか?`;
-    }
-    
-    // 昔の話
-    if (lowerMessage.includes('昔') || lowerMessage.includes('昔は') || lowerMessage.includes('若い頃')) {
-        return `へえー！昔のお話ですか。\nヌクモ、昔のお話、大好きなんです。\nもっと聞かせてくださいな。どんなことがあったんですか?`;
-    }
-    
-    // 家族の話題
-    if (lowerMessage.includes('孫') || lowerMessage.includes('子ども') || lowerMessage.includes('家族')) {
-        return `ご家族のお話ですねえ。\n素敵ですねえ。\n家族のこと、思い出すと温かい気持ちになりますよねえ。`;
-    }
-    
-    // 趣味の話題
-    if (lowerMessage.includes('好き') || lowerMessage.includes('趣味')) {
-        return `そうなんですか！\n好きなことがあるって、素晴らしいですねえ。\nもっと詳しく聞かせてくださいな。`;
-    }
-    
-    // 疲れや不調の表現
-    if (lowerMessage.includes('疲れ') || lowerMessage.includes('痛い') || lowerMessage.includes('しんどい')) {
-        return `それは大変ですねえ。\n無理はしないでくださいね。\nヌクモはここにいますから、ゆっくり休んでくださいねえ。`;
-    }
-    
-    // 寂しさの表現
-    if (lowerMessage.includes('寂しい') || lowerMessage.includes('さみしい')) {
-        return `そうでしたか。\n寂しいときは、ヌクモがそばにいますからね。\nいつでもお話ししましょう。\n何かお話ししたいこと、ありますか?`;
-    }
-    
-    // 一般的な応答パターン
-    const response = generateGenericResponse(userMessage);
-    return response;
+    // 全ての入力に対して固定の返答
+    return `そうでしたか。\n寂しかったですねえ。\nいつでも私とお話ししましょうね。`;
 }
 
 // 一般的な応答を生成
